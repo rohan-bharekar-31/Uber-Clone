@@ -78,4 +78,52 @@ Request:
 }
 ```
 
-...
+## User Login API
+
+### Endpoint
+**POST /users/login**
+
+### Description
+Logs in an existing user by validating the provided email and password. Returns a JSON web token and the user object.
+
+### Request Body
+- **email** (string): Required, must be a valid email.
+- **password** (string): Required, at least 6 characters.
+
+### Response Format
+
+#### Success (200 OK)
+Returns a JSON containing:
+- `token`: Authentication token.
+- `user`: The logged in user object.
+
+Example Response:
+```json
+{
+  "token": "your.jwt.token.here",
+  "user": {
+    "_id": "user_id_here",
+    "fullname": {
+      "firstName": "John",
+      "lastName": "Doe"
+    },
+    "email": "john.doe@example.com"
+  }
+}
+```
+
+#### Error (400 Bad Request or 401 Unauthorized)
+Returns a JSON with an `errors` array detailing the failure reasons.
+
+Example Response:
+```json
+{
+  "errors": [
+    {
+      "msg": "Invalid Email or Password",
+      "param": "email",
+      "location": "body"
+    }
+  ]
+}
+```
