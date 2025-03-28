@@ -197,7 +197,7 @@ Returns an error message.
 ## Captain Registration API
 
 ### Endpoint
-**POST /capatin/register**
+**POST /capatins/register**
 
 ### Description
 Registers a new captain by validating the provided fullname, email, password, and vehicle information. The endpoint creates a captain account and returns an authentication token along with the captain details.
@@ -255,5 +255,121 @@ Returns:
       "location": "body"
     }
   ]
+}
+```
+
+## Captain Login API
+
+### Endpoint
+**POST /captains/login**
+
+### Description
+Logs in an existing captain by validating the provided email and password. Returns a JSON web token and the captain object.
+
+### Request Body
+- **email** (string): Required, must be a valid email.
+- **password** (string): Required, at least 6 characters.
+
+### Response Format
+
+#### Success (200 OK)
+Returns a JSON containing:
+- `token`: Authentication token.
+- `captain`: The logged in captain object.
+
+Example Response:
+```json
+{
+  "token": "your.jwt.token.here",
+  "captain": {
+    "_id": "captain_id_here",
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john.doe@example.com",
+    "status": "active",
+    "vehicle": {
+      "color": "red",
+      "plate": "ABC1234",
+      "capacity": 4,
+      "vehicleType": "car"
+    }
+  }
+}
+```
+
+#### Error (400 Bad Request or 401 Unauthorized)
+Returns a JSON with an `errors` array detailing the failure reasons.
+
+## Captain Profile API
+
+### Endpoint
+**GET /captains/profile**
+
+### Description
+Fetches the profile details of the authenticated captain.
+
+### Authentication
+Requires a valid token in a cookie or Authorization header.
+
+### Response Format
+
+#### Success (200 OK)
+Returns a JSON containing the captain profile.
+```json
+{
+  "captain": {
+    "_id": "captain_id_here",
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john.doe@example.com",
+    "status": "active",
+    "vehicle": {
+      "color": "red",
+      "plate": "ABC1234",
+      "capacity": 4,
+      "vehicleType": "car"
+    }
+  }
+}
+```
+
+#### Error (401 Unauthorized)
+Returns an error message.
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
+## Captain Logout API
+
+### Endpoint
+**GET /captains/logout**
+
+### Description
+Logs out the authenticated captain by clearing the authentication cookie and blacklisting the token.
+
+### Authentication
+Requires a valid token in a cookie or Authorization header.
+
+### Response Format
+
+#### Success (200 OK)
+Returns a JSON confirming logout.
+```json
+{
+  "message": "Logged Out"
+}
+```
+
+#### Error (401 Unauthorized)
+Returns an error message.
+```json
+{
+  "message": "Unauthorized"
 }
 ```
