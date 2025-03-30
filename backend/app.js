@@ -4,11 +4,13 @@ import userRouter from "./routes/user.routes.js";
 import connectToDB from "./db/db.js";
 import cookieParser from "cookie-parser";
 import captainRouter from "./routes/captain.routes.js"
+import cors from "cors"
 
 const app=express();
 configDotenv()
 connectToDB();
 
+app.use(cors());
 // Parses JSON data (from API requests with 'Content-Type: application/json')
 app.use(express.json());
 // Parses URL-encoded form data (from <form> submissions)

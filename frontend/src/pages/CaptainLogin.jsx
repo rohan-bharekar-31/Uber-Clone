@@ -1,17 +1,62 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom';
+import React, { useContext, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { CaptainDataContext } from '../context/CaptainContext';
+import { toast } from 'react-toastify';
 
 const CaptainLogin = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("")
-    const [captainData, setCaptainData] = useState({})
+    const navigate = useNavigate();
+    const { setCaptain } = useContext(CaptainDataContext)
 
-    const submitHandler = (e) => {
+    const submitHandler = async (e) => {
         e.preventDefault();
-        setCaptainData({ email: email, password: password });
-        console.log(captainData);
-        setEmail("");
-        setPassword("");
+        const newCaptain = {
+            email,
+            password,
+        }
+
+        try {
+            const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/captains/login`, newCaptain);
+            const { data } = res; // Extract data from response
+
+            if (res.status === 200) {
+                localStorage.setItem("token", data.token);
+                setCaptain(data.captain);
+                toast.success("Registered Successfully!"); // Success message
+                navigate("/captain-home"); // Redirect to Captain home
+            }
+        } catch (error) {
+            if (error.response) {
+                if (error.response.status === 400) {
+                    const errors = error.response.data.errors;
+                    // Handle validation errors 
+                    if (errors) {
+                        errors.forEach((item) => {
+                            toast.error(item.msg); // Show each error message from the backend
+                        });
+                    }
+                    // Handle user already exists error
+                    else {
+                        toast.error(error.response.data.message);
+                    }
+                } else if (error.response.status == 401) {
+                    toast.error(error.response.data)
+                }
+                else if (error.response.status === 500) {
+                    toast.error("Server error. Please try again later."); // Server error
+                } else {
+                    toast.error("An unexpected error occurred. Please try again."); // For any other error codes
+                }
+            } else {
+                console.log(error)
+            }
+        } finally {
+            setEmail("");
+            setPassword("");
+
+        }
     }
 
     return (
@@ -23,7 +68,6 @@ const CaptainLogin = () => {
                     <input
                         value={email}
                         onChange={(e) => {
-                            console.log(e)
                             setEmail(e.target.value)
                         }}
                         type="email"

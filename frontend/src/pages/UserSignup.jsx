@@ -1,21 +1,71 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom';
+import React, { useContext, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom';
+import axios from "axios";
+import { UserDataContext } from '../context/UserContext';
+import { toast } from 'react-toastify';
+
+
 
 const UserSignUp = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("")
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("");
-    const [userData, setUserData] = useState({})
+    const { user, setUser } = useContext(UserDataContext);
+    const navigate = useNavigate();
 
-    const submitHandler = (e) => {
+    const submitHandler = async (e) => {
         e.preventDefault();
-        setUserData({fullname:{firstName:firstName,lastName:lastName} ,email: email, password: password });
-        setEmail("");
-        setPassword("");
-        setFirstName("");
-        setLastName("");
-    }
+
+        const newUser = {
+            fullname: {
+                firstname: firstName,
+                lastname: lastName,
+            },
+            email,
+            password,
+        };
+
+        try {
+            const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, newUser);
+            const { data } = res; // Extract data from response
+
+            if (res.status === 201) {
+                localStorage.setItem("token", data.token);
+                setUser(data.user); // Update user state
+                toast.success("Registered Successfully!"); // Success message
+                navigate("/home"); // Redirect to home
+            }
+        } catch (error) {
+            if (error.response) {
+                if (error.response.status === 400) {
+                    // Handle validation errors (e.g., user already exists, invalid input)
+                    const errors = error.response.data.errors;
+                    if (errors) {
+                        errors.forEach((item) => {
+                            toast.error(item.msg); // Show each error message from the backend
+                        });
+                    } else {
+                        toast.error("There was an error processing your request"); // Generic message
+                    }
+                } else if (error.response.status === 500) {
+                    toast.error("Server error. Please try again later."); // Server error
+                } else {
+                    toast.error("An unexpected error occurred. Please try again."); // For any other error codes
+                }
+            } else {
+                // If no response, likely a network issue
+                toast.error("Network error. Please check your internet connection.");
+            }
+        } finally {
+            // Reset the form fields
+            setEmail("");
+            setPassword("");
+            setFirstName("");
+            setLastName("");
+        }
+    };
+
 
     return (
 
@@ -69,7 +119,7 @@ const UserSignUp = () => {
                         type="password"
                         placeholder='password'
                     />
-                    <button type="submit" className='bg-[#111] text-white font-semibold mb-5 rounded px-4 py-2 w-full text-lg mb-3 placeholder:text-base'>Login</button>
+                    <button type="submit" className='bg-[#111] text-white font-semibold mb-5 rounded px-4 py-2 w-full text-lg mb-3 placeholder:text-base'>Create Account</button>
                 </form>
                 <p className='text-center'>Already have a account? <Link to={"/login"} className='text-blue-600'>Login here</Link></p>
             </div>
