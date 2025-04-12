@@ -24,7 +24,7 @@ const CaptainLogin = () => {
             if (res.status === 200) {
                 localStorage.setItem("token", data.token);
                 setCaptain(data.captain);
-                toast.success("Registered Successfully!"); // Success message
+                toast.success("Logged in Sucessfully"); // Success message
                 navigate("/captain-home"); // Redirect to Captain home
             }
         } catch (error) {

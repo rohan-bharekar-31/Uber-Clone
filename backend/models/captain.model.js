@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs'; 
+import bcrypt from 'bcryptjs';
 
 const captainSchema = new mongoose.Schema({
     fullname: {
@@ -54,13 +54,14 @@ const captainSchema = new mongoose.Schema({
             required: true,
             enum: ['car', 'motorcycle', 'auto'],
         },
-        location: {
-            lat: {
-                type: Number,
-            },
-            long: {
-                type: Number,
-            }
+    },
+    location: {
+        //ltd - latitude and lng - longitude
+        ltd: {
+            type: Number,
+        },
+        lng: {
+            type: Number,
         }
     }
 });

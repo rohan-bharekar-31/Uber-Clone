@@ -5,22 +5,32 @@ import connectToDB from "./db/db.js";
 import cookieParser from "cookie-parser";
 import captainRouter from "./routes/captain.routes.js"
 import cors from "cors"
+import rideRouter from "./routes/ride.routes.js"
+import mapRouter from "./routes/maps.routes.js"
 
-const app=express();
+const app = express();
 configDotenv()
 connectToDB();
 
-app.use(cors());
-// Parses JSON data (from API requests with 'Content-Type: application/json')
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.options('*', cors());
+
 app.use(express.json());
-// Parses URL-encoded form data (from <form> submissions)
-app.use(express.urlencoded({extended:true}))
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
 
-app.use("/users",userRouter);
-app.use("/captains",captainRouter);
+app.use("/maps", mapRouter);
+app.use("/users", userRouter);
+app.use("/captains", captainRouter);
+app.use("/rides", rideRouter)
 
-app.get("/",(req,res)=>{
+app.get("/", (req, res) => {
   res.send("Hello World")
 })
 

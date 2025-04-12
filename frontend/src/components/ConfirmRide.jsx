@@ -4,10 +4,10 @@ import { IoIosArrowDown } from 'react-icons/io'
 import { FaLocationDot } from "react-icons/fa6";
 import { FaDollarSign } from "react-icons/fa";
 
-const ConfirmRide = ({ setConfirmRidePanelOpen,setVehicleFound }) => {
+const ConfirmRide = ({ setConfirmRidePanelOpen,setVehicleFound,pickup,destination,createRide,fare ,vehicleType}) => {
   return (
     <>
-      <IoIosArrowDown className={`text-2xl text-gray-400  w-full mb-5 `} onClick={() => setConfirmRidePanelOpen(false)} />
+      <IoIosArrowDown className={`text-2xl text-gray-400  w-full mb-5 `} onClick={() =>  setConfirmRidePanelOpen(false)} />
 
       <h1 className='text-2xl font-semibold '>Confirm Your Ride</h1>
       <div className='flex justify-between flex-col items-center '>
@@ -19,22 +19,22 @@ const ConfirmRide = ({ setConfirmRidePanelOpen,setVehicleFound }) => {
           <div className='flex items-center gap-4 p-2  border-b-2'>
             <FaLocationDot />
             <div>
-            <h3 className='text-lg font-medium'>562/11-A</h3>
-            <p className='text-sm -mt-1 text-gray-600'>Gagan Galxy Pune</p>
+            <h3 className='text-lg font-medium'>Pickup</h3>
+            <p className='text-sm -mt-1 text-gray-600 '>pickup</p>
             </div>
           </div>
           <div className='flex items-center gap-4 p-2 border-b-2'>
             <FaLocationDot />
             <div>
-            <h3 className='text-lg font-medium'>562/11-A</h3>
-            <p className='text-sm -mt-1 text-gray-600'>Gagan Galxy Pune</p>
+            <h3 className='text-lg font-medium'>Destination</h3>
+            <p className='text-sm -mt-1 text-gray-600 '>destination</p>
             </div>
           </div>
 
           <div className='flex items-center gap-4 p-2 border-b-2'>
             <FaDollarSign />
             <div>
-            <h3 className='text-lg font-medium'>500</h3>
+            <h3 className='text-lg font-medium'>fare[vehicleType]</h3>
             <p className='text-sm -mt-1 text-gray-600'>Amount</p>
             </div>
           </div>
@@ -42,6 +42,7 @@ const ConfirmRide = ({ setConfirmRidePanelOpen,setVehicleFound }) => {
 
         <button onClick={
           ()=>{
+            createRide();
             setConfirmRidePanelOpen(false),
             setVehicleFound(true)
           }
